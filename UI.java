@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 public class UI {
     private JFrame frame;
@@ -51,11 +50,13 @@ public class UI {
         JScrollPane listScrollPane = new JScrollPane(taskList);
         frame.add(listScrollPane, BorderLayout.CENTER);
 
-        // Add, Update, and Remove buttons
+        // Add, Remove, and Mark as Completed buttons
         JPanel buttonPanel = new JPanel();
         JButton addButton = new JButton("Add Task");
         JButton removeButton = new JButton("Remove Task");
+        JButton completeButton = new JButton("Mark as Completed");
 
+        // Add Task Button ActionListener
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -74,6 +75,7 @@ public class UI {
             }
         });
 
+        // Remove Task Button ActionListener
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -91,8 +93,29 @@ public class UI {
             }
         });
 
+        // Mark as Completed Button ActionListener
+        completeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedTaskTitle = taskList.getSelectedValue();
+                if (selectedTaskTitle != null) {
+                    // Mark selected task as completed
+                    for (Task task : taskManager.getTasks()) {
+                        if (task.getTitle().equals(selectedTaskTitle)) {
+                            taskManager.markTaskAsCompleted(task);
+                            // Update list model to show that the task is completed
+                            listModel.setElementAt(task.toString(), taskManager.getTasks().indexOf(task));
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add buttons to button panel
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
+        buttonPanel.add(completeButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         // Show the frame
